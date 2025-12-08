@@ -1,0 +1,26 @@
+# Núcleo
+torch
+openai-whisper
+
+# Descarga YouTube
+yt-dlp
+pytube
+
+# Traducción (NLLB)
+transformers>=4.35.0
+sentencepiece
+
+# Video y subtítulos
+moviepy==1.0.3
+imageio
+imageio-ffmpeg
+pillow
+
+# Utilidades
+numpy
+tqdm
+srt
+
+# API web
+flask
+flask-cors
