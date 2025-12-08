@@ -91,6 +91,7 @@ youtube-transcriber/
       └─ App.jsx         # Interfaz React (wizard, temas, etc.)
 
 ```
+---
 💻 Requisitos
 Hardware
 
