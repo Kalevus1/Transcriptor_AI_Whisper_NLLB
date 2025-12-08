@@ -1,0 +1,24 @@
+2.1 Backend
+
+En una terminal:
+
+cd backend
+python app.py
+
+2.2 Frontend
+
+En otra terminal (si ya estaba corriendo, primero Ctrl+C):
+
+cd frontend
+npm run dev
+
+
+2.3 ngrok
+
+En una tercera terminal (si ya estaba corriendo, Ctrl+C y vuelve a lanzar):
+
+cd C:\ngrok 
+ngrok http 5173
+
+
+Forwarding  https://uncheerful-larae-symphonic.ngrok-free.dev -> http://localhost:5173
