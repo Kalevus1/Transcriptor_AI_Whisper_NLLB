@@ -1,234 +1,229 @@
-# 🎧 Sistema Web de Transcripción y Traducción de YouTube (es/en/qu)
+🎧 Sistema Web de Transcripción y Traducción de YouTube (es/en/qu)
 
 Aplicación web para:
 
-- Descargar videos de YouTube
-- Transcribir el audio usando Whisper
-- Traducir entre Español, Inglés y Quechua usando NLLB
-- Generar:
-  - Archivos de subtítulos `.srt`
-  - Videos `.mp4` con subtítulos incrustados
+Descargar videos de YouTube
+
+Transcribir el audio usando Whisper
+
+Traducir entre Español, Inglés y Quechua usando NLLB
+
+Generar:
+
+Archivos de subtítulos .srt
+
+Videos .mp4 con subtítulos incrustados
 
 Incluye:
 
-- Frontend en **React + Vite** (con modo claro/oscuro).
-- Backend en **Python + Flask**.
-- Exposición al mundo usando **ngrok** (puedes entrar desde otra ciudad o dispositivo).
+Frontend en React + Vite (con modo claro/oscuro)
 
----
+Backend en Python + Flask
 
-## ✨ Características principales
+Exposición al mundo usando ngrok (acceso desde cualquier ciudad o dispositivo)
 
-### Transcripción
+✨ Características principales
+🔊 Transcripción
 
-- Usa **Whisper medium** (modelo de OpenAI) para transcribir audio.
-- Detección de idioma **automática** (no se pregunta al usuario).
-- Soporta al menos: Español, Inglés (y se trata Quechua en la lógica de negocio).
+Usa Whisper medium (OpenAI).
 
-### Traducción (NLLB)
+Detección de idioma automática.
 
-- Usa modelos **NLLB-200** de Meta:
-  - `facebook/nllb-200-distilled-600M` (rápido, menor peso)
-  - `facebook/nllb-200-1.3B` (más grande, mejor calidad, más consumo)
-- Desde el frontend puedes elegir:
-  - ⚡ **Rápido (600M)**
-  - 🎯 **Alta calidad (1.3B)**
+Funciona muy bien con español e inglés.
 
-### Reglas de traducción
+Se procesa Quechua en la lógica de negocio.
 
-- Si el idioma del video y el idioma destino son iguales → **solo transcribe**.
-- Soporta:
-  - `es ↔ en` (traducción directa).
-  - `es ↔ qu` (traducción directa).
-  - `en → qu` (se hace vía español: `en → es → qu`).
-- También tiene lógica para evitar repeticiones raras del modelo (limpieza de texto).
+🌍 Traducción (NLLB)
 
-### Generación de archivos
+Modelos disponibles:
 
-- Nombres de archivos:
-  - Cortos (slug del título o nombre del video).
-  - Incluyen los idiomas (`es`, `es-en`, `en-qu`, etc).
-  - No se sobreescriben: si existe, usan sufijo `_v2`, `_v3`, etc.
-- Tipos de salida:
-  - `SRT` → `mi_video_es-en_srt.srt`
-  - `MP4` con subtítulos incrustados usando **ffmpeg**.
+⚡ NLLB 600M — rápido, menor peso
 
-### Interfaz web
+🎯 NLLB 1.3B — más calidad, más consumo
 
-- Wizard de 3 pasos:
-  1. URL de YouTube
-  2. Configuración de traducción + modelo (600M / 1.3B)
-  3. Formato de salida (SRT / MP4 con subtítulos)
-- Modo **Claro / Oscuro** con botones:
-  - ☀️ Claro
-  - 🌙 Oscuro
-- Pantalla de resultados con:
-  - Título del video
-  - Idioma detectado
-  - Duración
-  - Cantidad de segmentos procesados
-  - Ruta/archivo generado
-  - Modelo de traducción usado
+Reglas:
 
----
+Si idioma origen = idioma destino → solo transcribe
 
-## 🧱 Arquitectura y estructura de carpetas
+es ↔ en traducción directa
 
-Estructura base del proyecto:
+es ↔ qu traducción directa
 
-```text
+en → qu se realiza como en → es → qu
+
+También incluye limpieza de repeticiones para evitar loops del modelo.
+
+🎬 Generación de archivos
+
+Nombres de archivo cortos y limpios (slug).
+
+Incluyen idiomas (es-en, en-qu, etc.)
+
+No se sobreescriben → usan sufijos _v2, _v3, etc.
+
+Salidas compatibles:
+
+SRT: archivos estándar de subtítulos
+
+MP4: video con subtítulos incrustados vía ffmpeg
+
+🖥️ Interfaz web
+
+Wizard de 3 pasos:
+
+URL del video
+
+Idioma de traducción + selección de modelo (600M / 1.3B)
+
+Formato de salida (SRT / MP4)
+
+Modo visual:
+
+☀️ Claro
+
+🌙 Oscuro
+
+Vista de resultados:
+
+Idioma detectado
+
+Duración
+
+Segmentos procesados
+
+Modelo de traducción usado
+
+Enlace de descarga del archivo final
+
+🧱 Arquitectura del Proyecto
 youtube-transcriber/
 ├─ backend/
-│  ├─ app.py             # Servidor Flask (API REST)
-│  ├─ transcriber.py     # Lógica principal de transcribir/traducir/generar salida
-│  └─ requirements.txt   # Dependencias de Python
+│  ├─ app.py
+│  ├─ transcriber.py
+│  └─ requirements.txt
 └─ frontend/
    ├─ index.html
-   ├─ vite.config.js     # Configuración de Vite (proxy + allowedHosts para ngrok)
+   ├─ vite.config.js
    ├─ package.json
    └─ src/
       ├─ main.jsx
-      └─ App.jsx         # Interfaz React (wizard, temas, etc.)
+      └─ App.jsx
 
-```
----
 💻 Requisitos
-Hardware
+🔧 Hardware
 
-Recomendado: GPU con al menos 8 GB de VRAM si quieres usar:
+Recomendado:
+
+GPU con 8 GB VRAM o más
+Necesaria para:
 
 Whisper medium
 
 NLLB 600M y especialmente 1.3B
 
-Si solo usas CPU, puede funcionar, pero será:
+Si ejecutas en CPU:
 
-Mucho más lento
+Funciona, pero muy lento
 
-Posiblemente insuficiente para videos largos
+Úsalo solo para pruebas o videos cortos
 
-Software
+🧰 Software
 
-Python 3.9+ (recomendado)
+Python 3.9+
 
-Node.js 18+ (para el frontend)
+Node.js 18+
 
-ffmpeg instalado y accesible en el PATH
+ffmpeg (instalado y en el PATH)
 
-ngrok instalado (para exponer la web públicamente)
+ngrok (para exponer la web)
 
-pip, npm, etc.
+pip / npm
 
 📦 Backend (Flask + modelos)
-1. Instalar dependencias
+1️⃣ Instalar dependencias
 
 Desde la carpeta backend/:
 
 cd backend
 pip install -r requirements.txt
 
+2️⃣ Componentes importantes del backend
+📄 transcriber.py
 
-El archivo requirements.txt incluye:
+La clase YouTubeTranscriber:
 
-torch
+Carga Whisper medium
 
-openai-whisper
+Carga dinámicamente el modelo NLLB (600M / 1.3B)
 
-transformers
+Descarga el video con yt_dlp
 
-sentencepiece
+Transcribe y traduce
 
-yt-dlp, pytube
+Genera archivos .srt y .mp4
 
-moviepy, imageio, imageio-ffmpeg
+Devuelve datos como:
 
-flask, flask-cors
+detected_language
 
-y otras utilidades necesarias.
+segments_count
 
-2. Archivos importantes del backend
-backend/transcriber.py
+translation_applied
 
-Clase YouTubeTranscriber:
+output_path
 
-Carga Whisper (medium por defecto).
+translation_model_size
 
-Gestiona la carga dinámica de NLLB 600M / 1.3B:
+🌐 app.py
 
-set_translation_model_size("600m")
-
-set_translation_model_size("1.3b")
-
-Descarga videos de YouTube (yt_dlp y pytube).
-
-Transcribe, traduce y genera:
-
-.srt (con srt)
-
-.mp4 (con ffmpeg + imageio-ffmpeg)
-
-Devuelve un diccionario con info del procesamiento:
-
-output_path, detected_language, segments_count, translation_applied, translation_path, duration_seconds, translation_model_size.
-
-backend/app.py
-
-Servidor Flask con CORS.
-
-Endpoints principales:
+Servidor Flask que expone:
 
 GET /api/health
-Para comprobar que el backend está vivo.
 
 GET /api/output/<filename>
-Sirve el archivo generado en la carpeta output/.
 
 POST /api/process-youtube
-Recibe JSON:
+
+Ejemplo de request:
 
 {
-  "youtubeUrl": "https://www.youtube.com/watch?v=...",
+  "youtubeUrl": "https://www.youtube.com/watch?v=xxxx",
   "targetLanguage": "none|es|en|qu",
   "outputFormat": "srt|mp4",
   "translationModel": "600m|1.3b"
 }
 
 
-Y devuelve:
+Ejemplo de respuesta:
 
 {
   "success": true,
-  "detectedLanguage": "es|en|qu",
-  "videoTitle": "Título del video",
-  "duration": "hh:mm:ss",
-  "segments": 123,
-  "outputFile": "mi_video_es-en_srt.srt",
-  "downloadUrl": "/api/output/mi_video_es-en_srt.srt",
+  "detectedLanguage": "es",
+  "videoTitle": "Título detectado",
+  "duration": "00:10:31",
+  "segments": 132,
+  "outputFile": "video_es-en_srt.srt",
+  "downloadUrl": "/api/output/video_es-en_srt.srt",
   "translationApplied": true,
   "translationPath": "es→en",
-  "translationModel": "600m|1.3b",
+  "translationModel": "600m",
   "message": "Procesamiento completado correctamente."
 }
 
 🌐 Frontend (React + Vite)
-1. Instalar dependencias
-
-Desde la carpeta frontend/:
-
+1️⃣ Instalar dependencias
 cd frontend
 npm install
 
-2. Configuración de Vite (vite.config.js)
+2️⃣ Configuración Vite (vite.config.js)
 
-Este archivo es clave porque:
+Incluye:
 
-Define el puerto del dev server (5173).
+Proxy /api → backend
 
-Configura el proxy de /api hacia el backend en localhost:8000.
+Hosts permitidos para ngrok
 
-Permite que ngrok sea un host válido (evita error “Blocked request. This host is not allowed”).
-
-Ejemplo completo recomendado:
+Puerto 5173
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -251,107 +246,85 @@ export default defineConfig({
   }
 });
 
-3. Archivo principal de UI (src/App.jsx)
+3️⃣ UI (App.jsx)
 
-Implementa el wizard de 3 pasos:
+Contiene:
 
-URL del video
+Wizard de 3 pasos
 
-Traducción + selección de modelo (600M / 1.3B)
+Selección de modelo NLLB
 
-Formato de salida (SRT / MP4)
+Modo claro/oscuro
 
-Usa fetch("/api/process-youtube") para hablar con el backend.
+Manejo de resultados
 
-Recibe el JSON de respuesta y muestra:
+Llamada:
 
-Idioma detectado
+fetch("/api/process-youtube", { method: "POST", body: ... })
 
-Modelo usado
+🌍 Exponer al mundo usando ngrok
 
-Duración
+El flujo es:
 
-Enlace de descarga
+Backend en localhost:8000
 
-Tiene modo claro/oscuro con un useState("light" | "dark").
+Frontend en localhost:5173
 
-Botones:
+ngrok expone localhost:5173 a internet
 
-☀️ Claro
+🛠️ Configurar ngrok (una vez)
 
-🌙 Oscuro
+Crear cuenta: https://ngrok.com
 
-Cambia colores de fondo, tarjetas y textos según el tema.
+Obtener Auth Token
 
-🌍 Exponer la app al mundo con ngrok
+Configurar:
 
-La idea es:
-
-Backend Flask corriendo en localhost:8000.
-
-Frontend Vite corriendo en localhost:5173.
-
-ngrok exponiendo localhost:5173 a una URL pública HTTPS.
-
-1. Instalar y configurar ngrok (una sola vez)
-
-Crea una cuenta gratis en: https://ngrok.com
-
-En el dashboard obtén tu Auth Token.
-
-Configura ngrok:
-
-En Windows
-
-Asumiendo que pusiste ngrok.exe en C:\ngrok:
+Windows:
 
 cd C:\ngrok
-ngrok config add-authtoken TU_TOKEN_AQUI
+ngrok config add-authtoken TU_TOKEN
 
-En Linux / macOS
-./ngrok config add-authtoken TU_TOKEN_AQUI
 
-🚀 Pasos para ejecutar TODO (backend + frontend + ngrok)
+Linux/macOS:
 
-Estos son los pasos clave que usarás siempre que quieras dejar la app accesible desde internet.
-Funcionan con la configuración actual que ya probaste.
+./ngrok config add-authtoken TU_TOKEN
 
-2.1 Backend
+🚀 Pasos para ejecutar TODO
+
+Estos son los pasos que usarás siempre:
+
+2.1 ▶️ Backend
 
 En una terminal:
 
 cd backend
 python app.py
 
+2.2 ▶️ Frontend
 
-Esto levanta Flask en http://0.0.0.0:8000.
-
-2.2 Frontend
-
-En otra terminal (si ya estaba corriendo, primero Ctrl+C):
+En otra terminal:
 
 cd frontend
 npm run dev
 
+2.3 🌍 ngrok
 
-Esto levanta Vite en http://localhost:5173.
+En una tercera terminal:
 
-2.3 ngrok
+Windows:
 
-En una tercera terminal (si ya estaba corriendo, primero Ctrl+C y vuelve a lanzar):
-
-En Windows, si ngrok está en C:\ngrok:
-
-cd C:\ngrok 
+cd C:\ngrok
 ngrok http 5173
 
 
-La consola de ngrok mostrará algo como:
+Aparecerá algo como:
 
 Forwarding  https://uncheerful-larae-symphonic.ngrok-free.dev -> http://localhost:5173
 
 
-✨ Esa URL pública (por ejemplo https://uncheerful-larae-symphonic.ngrok-free.dev) es la que puedes abrir desde:
+👉 Esa URL pública es tu app web online.
+Funciona en:
 
 Otra ciudad
 
@@ -359,123 +332,65 @@ Otro país
 
 Tu celular
 
-Cualquier dispositivo con internet
-
-La app funcionará exactamente igual que en local:
-
-Pegas una URL de YouTube
-
-Eliges idioma de traducción (o sin traducción)
-
-Eliges modelo NLLB (600M o 1.3B)
-
-Eliges formato (SRT o MP4)
-
-Esperas a que termine el procesamiento
-
-Descargas el archivo generado
-
-Mientras tanto, tu PC es la que realmente está:
-
-Descargando el video
-
-Procesando con Whisper + NLLB
-
-Generando archivos
+Cualquier PC
 
 🧪 Flujo de uso resumido
 
-Entras a la URL pública de ngrok (ejemplo):
+Entras a la URL pública de ngrok
 
-https://uncheerful-larae-symphonic.ngrok-free.dev
+Pegas una URL de YouTube
 
-Paso 1:
+Seleccionas idioma de destino
 
-Pegar URL de YouTube válida
+Seleccionas modelo NLLB (600M / 1.3B)
 
-Paso 2:
+Seleccionas formato (SRT / MP4)
 
-Elegir:
+Procesas el video
 
-Sin traducción / Español / Inglés / Quechua
+Descargas el archivo final
 
-Modelo de traducción:
+🛠️ Problemas comunes
+❌ "Blocked request. This host is not allowed."
 
-⚡ Rápido (600M)
+Solución → agregar en vite.config.js:
 
-🎯 Alta calidad (1.3B)
-
-Paso 3:
-
-Elegir formato:
-
-Archivo SRT
-
-Video MP4 con subtítulos
-
-Click en Procesar Video
-
-Esperar a que termine
-
-Descargar el archivo desde el link que aparece en la pantalla de resultado.
-
-🛠️ Problemas comunes y soluciones
-❌ Error: Blocked request. This host ("xxx.ngrok-free.dev") is not allowed.
-
-Solución: asegurarse de que vite.config.js tenga:
-
-server: {
-  port: 5173,
-  host: true,
-  allowedHosts: [
-    ".ngrok-free.app",
-    ".ngrok-free.dev"
-  ],
-  proxy: {
-    "/api": {
-      target: "http://localhost:8000",
-      changeOrigin: true
-    }
-  }
-}
+allowedHosts: [".ngrok-free.app", ".ngrok-free.dev"]
 
 
-Y luego reiniciar:
+Reiniciar:
 
 npm run dev
-
 ngrok http 5173
 
-❌ Problemas de memoria RAM / VRAM
+❌ Memoria insuficiente
 
-Si tu GPU/CPU no aguanta:
+Usa modelo 600M en vez de 1.3B
 
-Considera:
+Usa Whisper base si necesitas aún menos consumo
 
-Cambiar Whisper medium → base o small.
+Procesa videos cortos si estás en CPU
 
-Usar solo NLLB 600M en vez de 1.3B.
+❌ Procesamiento muy lento
 
-Procesar videos más cortos para las pruebas.
+Cambiar modelo a 600M
 
-❌ Muy lento
+Cerrar apps que usen GPU
 
-Usa el modelo de traducción 600m en lugar de 1.3b.
-
-Evita procesar videos de más de ~30–40 minutos si estás en CPU o GPU modesta.
-
-Cierra otras apps que consuman GPU (juegos, etc.).
+Evitar videos de más de 30 minutos
 
 📌 Notas finales
 
 Este proyecto está pensado como una solución auto-hosted:
 
-Tú controlas tu PC + GPU
+Tu PC + tu GPU hacen todo el procesamiento
 
-Expones la web temporalmente con ngrok
+ngrok permite exponer la web temporalmente
 
-Para hacerlo 24/7 en la nube necesitarías:
+Para ponerlo 24/7 en internet, necesitarías:
 
-Un servidor con GPU (RunPod, Paperspace, etc.)
+Servidor con GPU (RunPod, Paperspace, LambdaLabs, etc.)
 
-Subir backend allí y apuntar el frontend a esa URL.
+Deployar backend allí
+
+Servir frontend desde Vite o Nginx
