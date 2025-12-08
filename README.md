@@ -308,7 +308,7 @@ ngrok http 5173
 Ejemplo de salida:
 
 ```
-Forwarding  https://uncheerful-larae-symphonic.ngrok-free.dev -> http://localhost:5173
+Forwarding  https://abcdef-ghijk-symphonic.ngrok-free.dev -> http://localhost:5173
 ```
 
 👉 Esa URL es la aplicación **online**.
