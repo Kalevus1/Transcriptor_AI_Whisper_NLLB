@@ -93,6 +93,7 @@ youtube-transcriber/
 ```
 💻 Requisitos
 Hardware
+
 Recomendado: GPU con al menos 8 GB de VRAM si quieres usar:
 
 Whisper medium
@@ -106,6 +107,7 @@ Mucho más lento
 Posiblemente insuficiente para videos largos
 
 Software
+
 Python 3.9+ (recomendado)
 
 Node.js 18+ (para el frontend)
@@ -118,11 +120,13 @@ pip, npm, etc.
 
 📦 Backend (Flask + modelos)
 1. Instalar dependencias
-Desde la carpeta backend/:
 
+Desde la carpeta backend/:
 
 cd backend
 pip install -r requirements.txt
+
+
 El archivo requirements.txt incluye:
 
 torch
@@ -143,6 +147,7 @@ y otras utilidades necesarias.
 
 2. Archivos importantes del backend
 backend/transcriber.py
+
 Clase YouTubeTranscriber:
 
 Carga Whisper (medium por defecto).
@@ -166,6 +171,7 @@ Devuelve un diccionario con info del procesamiento:
 output_path, detected_language, segments_count, translation_applied, translation_path, duration_seconds, translation_model_size.
 
 backend/app.py
+
 Servidor Flask con CORS.
 
 Endpoints principales:
@@ -179,15 +185,15 @@ Sirve el archivo generado en la carpeta output/.
 POST /api/process-youtube
 Recibe JSON:
 
-
 {
   "youtubeUrl": "https://www.youtube.com/watch?v=...",
   "targetLanguage": "none|es|en|qu",
   "outputFormat": "srt|mp4",
   "translationModel": "600m|1.3b"
 }
-Y devuelve:
 
+
+Y devuelve:
 
 {
   "success": true,
@@ -202,16 +208,17 @@ Y devuelve:
   "translationModel": "600m|1.3b",
   "message": "Procesamiento completado correctamente."
 }
+
 🌐 Frontend (React + Vite)
 1. Instalar dependencias
-Desde la carpeta frontend/:
 
+Desde la carpeta frontend/:
 
 cd frontend
 npm install
 
-
 2. Configuración de Vite (vite.config.js)
+
 Este archivo es clave porque:
 
 Define el puerto del dev server (5173).
@@ -221,7 +228,6 @@ Configura el proxy de /api hacia el backend en localhost:8000.
 Permite que ngrok sea un host válido (evita error “Blocked request. This host is not allowed”).
 
 Ejemplo completo recomendado:
-
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -244,8 +250,8 @@ export default defineConfig({
   }
 });
 
-
 3. Archivo principal de UI (src/App.jsx)
+
 Implementa el wizard de 3 pasos:
 
 URL del video
@@ -277,6 +283,7 @@ Botones:
 Cambia colores de fondo, tarjetas y textos según el tema.
 
 🌍 Exponer la app al mundo con ngrok
+
 La idea es:
 
 Backend Flask corriendo en localhost:8000.
@@ -285,9 +292,8 @@ Frontend Vite corriendo en localhost:5173.
 
 ngrok exponiendo localhost:5173 a una URL pública HTTPS.
 
-
-
 1. Instalar y configurar ngrok (una sola vez)
+
 Crea una cuenta gratis en: https://ngrok.com
 
 En el dashboard obtén tu Auth Token.
@@ -295,46 +301,55 @@ En el dashboard obtén tu Auth Token.
 Configura ngrok:
 
 En Windows
-Asumiendo que pusiste ngrok.exe en C:\ngrok:
 
+Asumiendo que pusiste ngrok.exe en C:\ngrok:
 
 cd C:\ngrok
 ngrok config add-authtoken TU_TOKEN_AQUI
-En Linux / macOS
 
+En Linux / macOS
 ./ngrok config add-authtoken TU_TOKEN_AQUI
+
 🚀 Pasos para ejecutar TODO (backend + frontend + ngrok)
+
 Estos son los pasos clave que usarás siempre que quieras dejar la app accesible desde internet.
 Funcionan con la configuración actual que ya probaste.
 
 2.1 Backend
-En una terminal:
 
+En una terminal:
 
 cd backend
 python app.py
+
+
 Esto levanta Flask en http://0.0.0.0:8000.
 
 2.2 Frontend
-En otra terminal (si ya estaba corriendo, primero Ctrl+C):
 
+En otra terminal (si ya estaba corriendo, primero Ctrl+C):
 
 cd frontend
 npm run dev
+
+
 Esto levanta Vite en http://localhost:5173.
 
 2.3 ngrok
+
 En una tercera terminal (si ya estaba corriendo, primero Ctrl+C y vuelve a lanzar):
 
 En Windows, si ngrok está en C:\ngrok:
 
-
 cd C:\ngrok 
 ngrok http 5173
+
+
 La consola de ngrok mostrará algo como:
 
-
 Forwarding  https://uncheerful-larae-symphonic.ngrok-free.dev -> http://localhost:5173
+
+
 ✨ Esa URL pública (por ejemplo https://uncheerful-larae-symphonic.ngrok-free.dev) es la que puedes abrir desde:
 
 Otra ciudad
@@ -368,6 +383,7 @@ Procesando con Whisper + NLLB
 Generando archivos
 
 🧪 Flujo de uso resumido
+
 Entras a la URL pública de ngrok (ejemplo):
 
 https://uncheerful-larae-symphonic.ngrok-free.dev
@@ -404,8 +420,8 @@ Descargar el archivo desde el link que aparece en la pantalla de resultado.
 
 🛠️ Problemas comunes y soluciones
 ❌ Error: Blocked request. This host ("xxx.ngrok-free.dev") is not allowed.
-Solución: asegurarse de que vite.config.js tenga:
 
+Solución: asegurarse de que vite.config.js tenga:
 
 server: {
   port: 5173,
@@ -421,6 +437,8 @@ server: {
     }
   }
 }
+
+
 Y luego reiniciar:
 
 npm run dev
@@ -428,6 +446,7 @@ npm run dev
 ngrok http 5173
 
 ❌ Problemas de memoria RAM / VRAM
+
 Si tu GPU/CPU no aguanta:
 
 Considera:
@@ -439,6 +458,7 @@ Usar solo NLLB 600M en vez de 1.3B.
 Procesar videos más cortos para las pruebas.
 
 ❌ Muy lento
+
 Usa el modelo de traducción 600m en lugar de 1.3b.
 
 Evita procesar videos de más de ~30–40 minutos si estás en CPU o GPU modesta.
@@ -446,6 +466,7 @@ Evita procesar videos de más de ~30–40 minutos si estás en CPU o GPU modesta
 Cierra otras apps que consuman GPU (juegos, etc.).
 
 📌 Notas finales
+
 Este proyecto está pensado como una solución auto-hosted:
 
 Tú controlas tu PC + GPU
