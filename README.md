@@ -89,6 +89,8 @@ youtube-transcriber/
    └─ src/
       ├─ main.jsx
       └─ App.jsx         # Interfaz React (wizard, temas, etc.)
+
+```
 💻 Requisitos
 Hardware
 Recomendado: GPU con al menos 8 GB de VRAM si quieres usar:
