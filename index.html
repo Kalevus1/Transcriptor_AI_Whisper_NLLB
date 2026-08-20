@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 Sistema de Transcripción y Traducción YouTube - Infografía</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --dark-light: #334155;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --whisper-color: #8b5cf6;
+            --nllb-color: #0ea5e9;
+            --youtube-color: #ff0000;
+            --python-color: #3776ab;
+            --react-color: #61dafb;
+            --quechua-color: #8b4513;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* HEADER */
+        .hero-header {
+            text-align: center;
+            padding: 50px 20px 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.3);
+        }
+        
+        .hero-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,0 L1000,0 L1000,100 L0,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .hero-title {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title i {
+            font-size: 3rem;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            position: relative;
+            z-index: 2;
+            line-height: 1.5;
+        }
+        
+        .badge-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        /* MAIN CONTENT - UNA COLUMNA */
+        .section-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        /* SECTION STYLES */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-light);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .section-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 25px;
+            color: white;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            flex-grow: 1;
+        }
+        
+        .section-description {
+            color: var(--gray);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+        
+        /* FLOW DIAGRAM */
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .flow-step {
+            display: flex;
+            margin-bottom: 25px;
+            position: relative;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 2;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .step-content {
+            background: var(--light);
+            padding: 22px;
+            border-radius: 14px;
+            margin-left: 20px;
+            flex-grow: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .step-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-desc {
+            color: var(--gray);
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+        
+        .flow-connector {
+            position: absolute;
+            left: 25px;
+            top: 50px;
+            bottom: -25px;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            z-index: 1;
+        }
+        
+        .flow-step:last-child .flow-connector {
+            display: none;
+        }
+        
+        /* MODELS COMPARISON - UNA FILA */
+        .models-row {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .model-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border-top: 6px solid;
+            transition: all 0.3s;
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .model-card.fast {
+            border-top-color: var(--secondary);
+        }
+        
+        .model-card.quality {
+            border-top-color: var(--warning);
+        }
+        
+        .model-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .model-desc {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .model-specs {
+            font-size: 0.95rem;
+        }
+        
+        .model-specs div {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .model-specs div:last-child {
+            border-bottom: none;
+        }
+        
+        .spec-label {
+            color: var(--dark-light);
+            font-weight: 600;
+        }
+        
+        .spec-value {
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        /* LANGUAGES ROW */
+        .languages-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .language-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-light);
+        }
+        
+        .language-card.spanish { border-top: 5px solid #aa1f2c; }
+        .language-card.english { border-top: 5px solid #1e3a8a; }
+        .language-card.quechua { border-top: 5px solid var(--quechua-color); }
+        
+        .language-flag {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .language-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .language-role {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            background: var(--light);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        /* ARCHITECTURE */
+        .architecture-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin: 30px 0;
+            position: relative;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        
+        .arch-component {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s;
+        }
+        
+        .arch-component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .arch-icon {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .arch-icon.frontend { color: var(--react-color); }
+        .arch-icon.backend { color: var(--python-color); }
+        .arch-icon.models { color: var(--whisper-color); }
+        
+        .arch-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: var(--primary);
+            z-index: 0;
+        }
+        
+        /* FEATURES LIST */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .feature-item {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .feature-item:hover {
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        
+        .feature-text {
+            color: var(--dark);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .feature-text strong {
+            color: var(--dark);
+        }
+        
+        /* OUTPUT FORMATS ROW */
+        .formats-row {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .format-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            border-top: 6px solid;
+        }
+        
+        .format-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .format-card.srt {
+            border-top-color: var(--nllb-color);
+        }
+        
+        .format-card.mp4 {
+            border-top-color: var(--youtube-color);
+        }
+        
+        .format-icon {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .format-icon.srt { color: var(--nllb-color); }
+        .format-icon.mp4 { color: var(--youtube-color); }
+        
+        /* PROJECT STRUCTURE */
+        .structure-container {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .tree-folder {
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 3px solid var(--warning);
+        }
+        
+        .tree-folder i {
+            color: var(--warning);
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .tree-file {
+            margin-left: 30px;
+            margin-bottom: 10px;
+            color: var(--gray);
+            padding: 5px 0;
+        }
+        
+        .tree-file i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+        
+        /* TECH STACK */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+        
+        .tech-tag {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+        
+        .tech-tag:hover {
+            background: var(--light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .tech-tag.python { color: var(--python-color); }
+        .tech-tag.react { color: #2a9d8f; }
+        .tech-tag.whisper { color: var(--whisper-color); }
+        .tech-tag.nllb { color: var(--nllb-color); }
+        .tech-tag.youtube { color: var(--youtube-color); }
+        .tech-tag.flask { color: #000000; }
+        .tech-tag.ffmpeg { color: #0077b6; }
+        
+        /* HIGHLIGHT BOX */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .highlight-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .highlight-title i {
+            color: var(--primary);
+        }
+        
+        /* DOWNLOAD SECTION */
+        .download-section {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3);
+        }
+        
+        .download-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .download-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+            color: var(--gray);
+            background: linear-gradient(135deg, var(--light) 0%, #e2e8f0 100%);
+            border-radius: 30px 30px 0 0;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 180px;
+            justify-content: center;
+        }
+        
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-link.code {
+            background: linear-gradient(135deg, var(--python-color) 0%, #2a9d8f 100%);
+        }
+        
+        .footer-link.docs {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+        }
+        
+        .footer-link.demo {
+            background: linear-gradient(135deg, var(--youtube-color) 0%, #ff6b6b 100%);
+        }
+        
+        .footer-link.download {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 30px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .section-icon {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .architecture-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .arch-component {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .arch-arrow {
+                display: none;
+            }
+            
+            .download-section {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hero-title i {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px 20px;
+            }
+            
+            .models-row,
+            .formats-row {
+                flex-direction: column;
+            }
+            
+            .model-card,
+            .format-card {
+                min-width: 100%;
+            }
+            
+            .flow-step {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .step-content {
+                margin-left: 0;
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .flow-connector {
+                display: none;
+            }
+            
+            .languages-row {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .language-card {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .footer-link {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .badge {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .download-title {
+                font-size: 1.7rem;
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-description {
+                font-size: 0.98rem;
+            }
+            
+            .download-title {
+                font-size: 1.5rem;
+            }
+            
+            .download-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO HEADER -->
+    <div class="hero-header">
+        <div class="container">
+            <h1 class="hero-title">
+                <i class="fab fa-youtube"></i>
+                Sistema de Transcripción y Traducción YouTube
+            </h1>
+            <p class="hero-subtitle">Aplicación web completa para transcribir y traducir videos de YouTube entre español, inglés y quechua usando modelos de IA avanzados</p>
+            
+            <div class="badge-container">
+                <div class="badge"><i class="fas fa-microphone"></i> Whisper AI</div>
+                <div class="badge"><i class="fas fa-language"></i> Traducción NLLB</div>
+                <div class="badge"><i class="fas fa-video"></i> Subtítulos SRT/MP4</div>
+                <div class="badge"><i class="fas fa-globe"></i> Exposición Ngrok</div>
+                <div class="badge"><i class="fas fa-palette"></i> Temas Claro/Oscuro</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MAIN CONTENT - UNA COLUMNA -->
+    <div class="container">
+        <div class="section-container">
+            
+            <!-- ARQUITECTURA DEL SISTEMA -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-sitemap"></i>
+                    </div>
+                    <h2 class="section-title">Arquitectura del Sistema</h2>
+                </div>
+                
+                <p class="section-description">
+                    El sistema está compuesto por tres capas principales que trabajan en conjunto para ofrecer una solución completa de transcripción y traducción.
+                </p>
+                
+                <div class="architecture-row">
+                    <div class="arch-component">
+                        <i class="arch-icon frontend fab fa-react"></i>
+                        <h3>Frontend React</h3>
+                        <p>Interfaz moderna con wizard de 3 pasos, temas claro/oscuro y diseño responsivo</p>
+                        <div class="tech-stack" style="margin-top: 15px;">
+                            <span class="tech-tag react"><i class="fab fa-react"></i> React</span>
+                            <span class="tech-tag"><i class="fas fa-paint-brush"></i> Tailwind</span>
+                        </div>
+                    </div>
+                    
+                    <div class="arch-component">
+                        <i class="arch-icon backend fab fa-python"></i>
+                        <h3>Backend Flask</h3>
+                        <p>API REST con endpoints para procesamiento, manejo de errores y servicio de archivos</p>
+                        <div class="tech-stack" style="margin-top: 15px;">
+                            <span class="tech-tag python"><i class="fab fa-python"></i> Python</span>
+                            <span class="tech-tag flask">Flask</span>
+                        </div>
+                    </div>
+                    
+                    <div class="arch-component">
+                        <i class="arch-icon models fas fa-brain"></i>
+                        <h3>Modelos de IA</h3>
+                        <p>Whisper para transcripción y NLLB para traducción con soporte multilingüe</p>
+                        <div class="tech-stack" style="margin-top: 15px;">
+                            <span class="tech-tag whisper"><i class="fas fa-microphone"></i> Whisper</span>
+                            <span class="tech-tag nllb"><i class="fas fa-language"></i> NLLB</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <div class="highlight-title">
+                        <i class="fas fa-satellite-dish"></i>
+                        Exposición Pública con Ngrok
+                    </div>
+                    <p>El sistema puede ser expuesto públicamente usando Ngrok, permitiendo acceso desde cualquier dispositivo con internet mientras el backend se ejecuta localmente. Esto habilita un uso remoto sin necesidad de despliegue en servidores cloud.</p>
+                </div>
+            </div>
+            
+            <!-- FLUJO DE TRABAJO -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h2 class="section-title">Flujo de Trabajo Paso a Paso</h2>
+                </div>
+                
+                <p class="section-description">
+                    El proceso completo desde que el usuario ingresa la URL hasta que recibe el archivo procesado.
+                </p>
+                
+                <div class="flow-diagram">
+                    <div class="flow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-link"></i> URL del Video</div>
+                            <div class="step-desc">El usuario ingresa la URL de YouTube. El sistema valida el enlace y prepara la descarga del video.</div>
+                        </div>
+                        <div class="flow-connector"></div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-language"></i> Configuración de Traducción</div>
+                            <div class="step-desc">Selección de idioma destino (español, inglés, quechua) o solo transcripción sin traducción.</div>
+                        </div>
+                        <div class="flow-connector"></div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-sliders-h"></i> Selección de Modelo</div>
+                            <div class="step-desc">Elección entre modelo rápido (600M) o de alta calidad (1.3B) para la traducción.</div>
+                        </div>
+                        <div class="flow-connector"></div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-file-export"></i> Formato de Salida</div>
+                            <div class="step-desc">Selección entre archivo SRT de subtítulos o video MP4 con subtítulos incrustados permanentemente.</div>
+                        </div>
+                        <div class="flow-connector"></div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-cogs"></i> Procesamiento Automático</div>
+                            <div class="step-desc">Descarga, transcripción con Whisper, traducción con NLLB y generación del archivo final.</div>
+                        </div>
+                        <div class="flow-connector"></div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <div class="step-title"><i class="fas fa-download"></i> Descarga del Resultado</div>
+                            <div class="step-desc">Entrega del archivo generado y opción para procesar otro video inmediatamente.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MODELOS DE TRADUCCIÓN -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <h2 class="section-title">Modelos de Traducción Disponibles</h2>
+                </div>
+                
+                <p class="section-description">
+                    Selecciona entre dos perfiles optimizados según tus necesidades de velocidad o calidad:
+                </p>
+                
+                <div class="models-row">
+                    <div class="model-card fast">
+                        <div class="model-name">⚡ Rápido (600M)</div>
+                        <div class="model-desc">Balance óptimo entre velocidad y calidad para procesamiento eficiente de videos largos</div>
+                        <div class="model-specs">
+                            <div><span class="spec-label">Whisper:</span><span class="spec-value">Modelo Medium</span></div>
+                            <div><span class="spec-label">NLLB:</span><span class="spec-value">Distilled 600M</span></div>
+                            <div><span class="spec-label">Memoria VRAM:</span><span class="spec-value">4-6 GB</span></div>
+                            <div><span class="spec-label">Velocidad:</span><span class="spec-value">Alta</span></div>
+                            <div><span class="spec-label">Calidad:</span><span class="spec-value">Buena</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="model-card quality">
+                        <div class="model-name">🎯 Alta Calidad (1.3B)</div>
+                        <div class="model-desc">Máxima calidad de traducción para resultados profesionales y precisión superior</div>
+                        <div class="model-specs">
+                            <div><span class="spec-label">Whisper:</span><span class="spec-value">Modelo Large-v3</span></div>
+                            <div><span class="spec-label">NLLB:</span><span class="spec-value">1.3B Parámetros</span></div>
+                            <div><span class="spec-label">Memoria VRAM:</span><span class="spec-value">8+ GB</span></div>
+                            <div><span class="spec-label">Velocidad:</span><span class="spec-value">Moderada</span></div>
+                            <div><span class="spec-label">Calidad:</span><span class="spec-value">Excelente</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- IDIOMAS SOPORTADOS -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h2 class="section-title">Idiomas Soportados</h2>
+                </div>
+                
+                <p class="section-description">
+                    El sistema detecta automáticamente el idioma del video y permite traducción entre los siguientes idiomas:
+                </p>
+                
+                <div class="languages-row">
+                    <div class="language-card spanish">
+                        <div class="language-flag">🇪🇸</div>
+                        <div class="language-name">Español</div>
+                        <div class="language-role">Detectado / Destino</div>
+                        <p style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">Traducción directa con inglés y quechua</p>
+                    </div>
+                    
+                    <div class="language-card english">
+                        <div class="language-flag">🇺🇸</div>
+                        <div class="language-name">Inglés</div>
+                        <div class="language-role">Detectado / Destino</div>
+                        <p style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">Traducción directa con español</p>
+                    </div>
+                    
+                    <div class="language-card quechua">
+                        <div class="language-flag">🏔️</div>
+                        <div class="language-name">Quechua</div>
+                        <div class="language-role">Destino (vía español)</div>
+                        <p style="font-size: 0.9rem; color: var(--gray); margin-top: 10px;">Traducción desde español o inglés</p>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <div class="highlight-title">
+                        <i class="fas fa-exchange-alt"></i>
+                        Reglas de Traducción Automáticas
+                    </div>
+                    <div class="features-grid" style="margin-top: 15px;">
+                        <div class="feature-item">
+                            <i class="feature-icon fas fa-arrow-right"></i>
+                            <div class="feature-text"><strong>Español ↔ Inglés:</strong> Traducción directa utilizando NLLB</div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="feature-icon fas fa-arrow-right"></i>
+                            <div class="feature-text"><strong>Español ↔ Quechua:</strong> Traducción directa con soporte nativo</div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="feature-icon fas fa-arrow-right"></i>
+                            <div class="feature-text"><strong>Inglés → Quechua:</strong> Traducción en dos pasos (en→es→qu)</div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="feature-icon fas fa-ban"></i>
+                            <div class="feature-text"><strong>Mismo idioma:</strong> Solo transcripción sin traducción</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CARACTERÍSTICAS TÉCNICAS -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h2 class="section-title">Características Técnicas Avanzadas</h2>
+                </div>
+                
+                <p class="section-description">
+                    Funcionalidades y optimizaciones implementadas en el sistema:
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-robot"></i>
+                        <div class="feature-text"><strong>Detección automática de idioma</strong> con Whisper - no requiere especificación manual</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-palette"></i>
+                        <div class="feature-text"><strong>Interfaz web responsiva</strong> con modo claro/oscuro y diseño moderno</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-magic"></i>
+                        <div class="feature-text"><strong>Wizard de 3 pasos intuitivo</strong> para configuración sencilla y guiada</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-memory"></i>
+                        <div class="feature-text"><strong>Gestión inteligente de memoria GPU</strong> - libera modelos cuando se cambian</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-broom"></i>
+                        <div class="feature-text"><strong>Limpieza de repeticiones</strong> en traducciones para mejorar calidad del texto</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-file-signature"></i>
+                        <div class="feature-text"><strong>Sistema de nombres único</strong> - usa sufijos _v2, _v3 para evitar sobreescritura</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-download"></i>
+                        <div class="feature-text"><strong>Múltiples métodos de descarga</strong> - yt-dlp con fallback a pytube como respaldo</div>
+                    </div>
+                    <div class="feature-item">
+                        <i class="feature-icon fas fa-server"></i>
+                        <div class="feature-text"><strong>API REST completa</strong> con manejo robusto de errores y CORS habilitado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FORMATOS DE SALIDA -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <h2 class="section-title">Formatos de Salida Disponibles</h2>
+                </div>
+                
+                <p class="section-description">
+                    Elige el formato que mejor se adapte a tus necesidades de uso:
+                </p>
+                
+                <div class="formats-row">
+                    <div class="format-card srt">
+                        <i class="format-icon srt fas fa-file-alt"></i>
+                        <div class="model-name">Archivo SRT (Subtítulos)</div>
+                        <div class="model-desc">Subtítulos independientes para usar en cualquier reproductor de video o plataforma</div>
+                        <div class="model-specs">
+                            <div><span class="spec-label">Extensión:</span><span class="spec-value">.srt</span></div>
+                            <div><span class="spec-label">Tamaño:</span><span class="spec-value">Muy pequeño</span></div>
+                            <div><span class="spec-label">Compatibilidad:</span><span class="spec-value">Universal</span></div>
+                            <div><span class="spec-label">Ejemplo:</span><span class="spec-value">video_es-en.srt</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="format-card mp4">
+                        <i class="format-icon mp4 fas fa-film"></i>
+                        <div class="model-name">Video MP4 (Subtítulos Incrustados)</div>
+                        <div class="model-desc">Video completo con subtítulos permanentemente incrustados usando FFmpeg</div>
+                        <div class="model-specs">
+                            <div><span class="spec-label">Extensión:</span><span class="spec-value">.mp4</span></div>
+                            <div><span class="spec-label">Tamaño:</span><span class="spec-value">Similar al original</span></div>
+                            <div><span class="spec-label">Compatibilidad:</span><span class="spec-value">Todo dispositivo</span></div>
+                            <div><span class="spec-label">Ejemplo:</span><span class="spec-value">video_es-en.mp4</span></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <div class="highlight-title">
+                        <i class="fas fa-video"></i>
+                        Procesamiento de Video con FFmpeg
+                    </div>
+                    <p>Para videos MP4 con subtítulos, se utiliza FFmpeg para incrustar permanentemente los subtítulos en el video, creando un archivo listo para reproducción en cualquier dispositivo sin necesidad de archivos adicionales. Los subtítulos quedan "quemados" en el video.</p>
+                </div>
+            </div>
+            
+            <!-- ESTRUCTURA DEL PROYECTO -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h2 class="section-title">Estructura del Proyecto</h2>
+                </div>
+                
+                <p class="section-description">
+                    Organización de archivos y carpetas del sistema:
+                </p>
+                
+                <div class="structure-container">
+                    <div class="tree-folder">
+                        <i class="fas fa-folder-open"></i> <strong>backend/</strong>
+                        <div class="tree-file"><i class="fas fa-file-code"></i> app.py - Servidor Flask API principal</div>
+                        <div class="tree-file"><i class="fas fa-file-code"></i> transcriber.py - Lógica de procesamiento de videos</div>
+                        <div class="tree-file"><i class="fas fa-file-alt"></i> requirements.txt - Dependencias Python</div>
+                    </div>
+                    
+                    <div class="tree-folder">
+                        <i class="fas fa-folder-open"></i> <strong>frontend/</strong>
+                        <div class="tree-file"><i class="fas fa-file-code"></i> App.jsx - Interfaz React principal</div>
+                        <div class="tree-file"><i class="fas fa-file-code"></i> vite.config.js - Configuración Vite</div>
+                        <div class="tree-file"><i class="fas fa-file-alt"></i> package.json - Dependencias Node.js</div>
+                    </div>
+                    
+                    <div class="tree-folder">
+                        <i class="fas fa-folder"></i> <strong>downloads/</strong> - Videos descargados temporalmente
+                    </div>
+                    
+                    <div class="tree-folder">
+                        <i class="fas fa-folder"></i> <strong>output/</strong> - Archivos generados (SRT/MP4)
+                    </div>
+                </div>
+                
+                <div class="tech-stack">
+                    <div class="tech-tag python"><i class="fab fa-python"></i> Python/Flask</div>
+                    <div class="tech-tag react"><i class="fab fa-react"></i> React</div>
+                    <div class="tech-tag whisper"><i class="fas fa-microphone"></i> Whisper</div>
+                    <div class="tech-tag nllb"><i class="fas fa-language"></i> NLLB</div>
+                    <div class="tech-tag youtube"><i class="fab fa-youtube"></i> yt-dlp</div>
+                    <div class="tech-tag ffmpeg"><i class="fas fa-film"></i> FFmpeg</div>
+                    <div class="tech-tag"><i class="fas fa-database"></i> Transformers</div>
+                    <div class="tech-tag"><i class="fas fa-server"></i> Ngrok</div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN DE DESCARGAS -->
+            <div class="download-section">
+                <div class="download-title">
+                    <i class="fas fa-rocket"></i>
+                    Accede al Proyecto
+                </div>
+                
+                <p class="download-description">
+                    Explora el código fuente, revisa la documentación, prueba la demo en vivo o descarga el proyecto completo para implementarlo en tu propio entorno.
+                </p>
+                
+                <div class="footer-links">
+                    <a href="https://github.com/Kalevus1/Transcriptor_AI_Whisper_NLLB" target="_blank" class="footer-link code">
+                        <i class="fas fa-code"></i> Código Fuente
+                    </a>
+                    <a href="https://github.com/Kalevus1/Infografia_Transcriptor_Whisper/blob/main/Proyecto_Transcriptor_IA_Documentacion_Capibara.pdf" target="_blank" class="footer-link docs">
+                        <i class="fas fa-book"></i> Documentación
+                    </a>
+                    <a href="https://youtu.be/4uOYwm38urY" target="_blank" class="footer-link demo">
+                        <i class="fas fa-play-circle"></i> Demo en Vivo
+                    </a>
+                    <a href="https://github.com/Kalevus1/Transcriptor_AI_Whisper_NLLB/archive/refs/heads/main.zip" target="_blank" class="footer-link download">
+                        <i class="fas fa-download"></i> Descargar Proyecto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--dark);">Sistema de Transcripción y Traducción de YouTube</h3>
+            <p style="max-width: 800px; margin: 0 auto; font-size: 1.05rem;">Proyecto completo con Frontend React, Backend Flask y modelos de IA Whisper + NLLB para transcripción y traducción multilingüe de videos de YouTube.</p>
+            
+            <div class="copyright">
+                <p>© 2025 Sistema de Transcripción YouTube - Proyecto educativo y demostrativo</p>
+                <p style="margin-top: 10px; font-size: 0.85rem;">Tecnologías utilizadas: React • Flask • Whisper • NLLB • yt-dlp • FFmpeg • Ngrok</p>
+                <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">
+                    Nota: Reemplaza los enlaces con tus URLs reales antes de publicar
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Animación suave al hacer scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de hover para secciones
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                section.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Efecto de parpadeo en el ícono de YouTube
+            const titleIcon = document.querySelector('.hero-title i');
+            setInterval(() => {
+                titleIcon.style.transform = 'scale(1.2) rotate(5deg)';
+                titleIcon.style.color = '#ff8e8e';
+                
+                setTimeout(() => {
+                    titleIcon.style.transform = 'scale(1) rotate(0deg)';
+                    titleIcon.style.color = '#ff6b6b';
+                }, 300);
+            }, 4000);
+            
+            // Animación de aparición para secciones
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar secciones para animación
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+            
+            // Efecto especial para botones de descarga
+            const downloadLinks = document.querySelectorAll('.footer-link');
+            downloadLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.05)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Alert para enlaces de ejemplo
+            const exampleLinks = document.querySelectorAll('a[href*="tu-usuario"], a[href*="youtube-transcriber-demo"]');
+            exampleLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').includes('tu-usuario') || 
+                        this.getAttribute('href').includes('youtube-transcriber-demo')) {
+                        e.preventDefault();
+                        alert('⚠️ Este es un enlace de ejemplo. Reemplázalo con tus URLs reales antes de publicar.\n\n- Código Fuente: URL de tu repositorio GitHub\n- Documentación: Enlace a tu README\n- Demo: URL de tu aplicación desplegada\n- Descarga: Enlace directo al ZIP de tu repositorio');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
